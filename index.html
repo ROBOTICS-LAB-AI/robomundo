@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RoboMundo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700;800&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+
+<!-- INGRESO -->
+<section id="p-ingreso" class="pantalla">
+  <div class="ingreso-caja">
+    <div class="logo">🤖</div>
+    <h1>RoboMundo</h1>
+    <p class="subtitulo">Aprende electrónica y Arduino paso a paso</p>
+    <form id="form-ingreso">
+      <label for="in-codigo">Escribe tu código</label>
+      <input id="in-codigo" autocomplete="off" spellcheck="false" placeholder="8A-K7M2" maxlength="12">
+      <button class="btn btn-grande" type="submit">Entrar</button>
+      <p id="ingreso-error" class="error"></p>
+    </form>
+    <p class="nota">¿No tienes código? Pídeselo a tu profesor.</p>
+    <p id="aviso-local" class="aviso" hidden>Modo de prueba local: cualquier código con la forma <b>8A-XXXX</b> funciona y el avance se guarda solo en esta computadora. El código <b>DOCENTE</b> desbloquea todo y <b>RUTA</b> muestra la ruta guiada como la vería un estudiante.</p>
+  </div>
+</section>
+
+<!-- MENÚ PRINCIPAL -->
+<section id="p-menu" class="pantalla">
+  <header class="barra">
+    <div class="marca">🤖 RoboMundo</div>
+    <div class="usuario"><span class="usuario-nombre"></span><button class="btn-texto" id="btn-salir">Salir</button></div>
+  </header>
+  <main class="menu">
+    <h2>¿Qué quieres hacer hoy?</h2>
+    <div class="menu-tarjetas">
+      <button class="tarjeta t-aventura" data-ir="mapa">
+        <span class="t-icono">🗺️</span>
+        <span class="t-titulo">Aventura</span>
+        <span class="t-desc">Avanza mundo por mundo y aprende un tema nuevo en cada uno.</span>
+        <span class="t-progreso" id="menu-progreso"></span>
+      </button>
+      <button class="tarjeta t-lab" data-ir="lab">
+        <span class="t-icono">🔬</span>
+        <span class="t-titulo">Laboratorio</span>
+        <span class="t-desc">Explora cada componente en 3D: gíralo, descubre sus partes y mira qué pasa si lo conectas mal.</span>
+      </button>
+      <button class="tarjeta t-retos" data-ir="retos">
+        <span class="t-icono">🏆</span>
+        <span class="t-titulo">Retos</span>
+        <span class="t-desc">Resuelve problemas reales armando tus propios circuitos desde cero.</span>
+        <span class="t-progreso" id="menu-retos"></span>
+      </button>
+      <button class="tarjeta t-ruta" id="menu-ruta" data-ir="ruta" hidden>
+        <span class="t-icono">🌟</span>
+        <span class="t-titulo">Mi ruta guiada</span>
+        <span class="t-desc">Actividades paso a paso, con explicaciones sencillas y lectura en voz alta.</span>
+      </button>
+    </div>
+    <button class="btn-texto" id="btn-reiniciar">Empezar de cero (borrar mi avance)</button>
+  </main>
+</section>
+
+<!-- LABORATORIO 3D -->
+<section id="p-lab" class="pantalla">
+  <header class="barra">
+    <button class="btn-texto" data-ir="menu">← Menú</button>
+    <div class="marca">🔬 Laboratorio</div>
+    <div class="usuario"><span class="usuario-nombre"></span></div>
+  </header>
+  <div class="lab-cuerpo">
+    <aside class="lab-lista" id="lab-lista"></aside>
+    <div class="lab-escena" id="lab-escena">
+      <div class="lab-ayuda">🖱️ Arrastra para girar · rueda para acercar · doble clic para volver a la vista inicial · clic en una parte para ver qué es</div>
+      <div class="tooltip lab-tip" hidden></div>
+      <div class="lab-cargando" id="lab-cargando" hidden></div>
+      <div class="lab-estilo"><button data-estilo-lab="cubos">🧊 Cubitos</button><button data-estilo-lab="real">✨ Realista</button></div>
+    </div>
+    <aside class="lab-info" id="lab-info"></aside>
+  </div>
+</section>
+
+<!-- MAPA DE MUNDOS -->
+<section id="p-mapa" class="pantalla">
+  <header class="barra">
+    <button class="btn-texto" data-ir="menu">← Menú</button>
+    <div class="marca">🗺️ Aventura</div>
+    <div class="usuario"><span class="usuario-nombre"></span></div>
+  </header>
+  <main class="mapa"><div id="mundos" class="mundos"></div></main>
+</section>
+
+<!-- RETOS -->
+<section id="p-retos" class="pantalla">
+  <header class="barra">
+    <button class="btn-texto" data-ir="menu">← Menú</button>
+    <div class="marca">🏆 Retos</div>
+    <div class="usuario"><span class="usuario-nombre"></span></div>
+  </header>
+  <main class="retos-vista">
+    <div class="mundo-cab retos-cab"><span class="mc-icono">🏆</span><div><h2>Retos</h2>
+      <div>Proyectos para resolver problemas reales. Aquí nadie te arma nada: eliges los componentes, los conectas y los programas tú. Puedes hacerlos en el orden que quieras.</div></div></div>
+    <div id="retos-lista" class="retos-lista"></div>
+  </main>
+</section>
+
+<!-- MUNDO (SUBNIVELES) -->
+<section id="p-mundo" class="pantalla">
+  <header class="barra">
+    <button class="btn-texto" id="mundo-volver" data-ir="mapa">← Mundos</button>
+    <div class="marca">🗺️ Aventura</div>
+    <div class="usuario"><span class="usuario-nombre"></span></div>
+  </header>
+  <main class="mundo-vista">
+    <div id="mundo-cab" class="mundo-cab"></div>
+    <div id="subniveles" class="subniveles"></div>
+  </main>
+</section>
+
+<!-- NIVEL -->
+<section id="p-nivel" class="pantalla">
+  <header class="barra">
+    <button class="btn-texto" id="btn-salir-nivel">← Volver</button>
+    <div class="nivel-titulo" id="nivel-titulo"></div>
+    <div class="acciones">
+      <button class="btn btn-sec" id="btn-codigo">📝 Código</button>
+      <button class="btn btn-sec" id="btn-ficha">📘 Ficha</button>
+      <button class="btn btn-sec" id="btn-pista" disabled>💡 Pista</button>
+      <button class="btn btn-sim" id="btn-sim">▶ Iniciar simulación</button>
+    </div>
+  </header>
+  <div class="nivel-cuerpo">
+    <aside class="panel-izq">
+      <div class="tarjeta-instr"><h3>🎯 Misión <button class="btn-hablar" data-hablar="#nivel-mision" title="Escuchar">🔊</button></h3><p id="nivel-mision"></p></div>
+      <div class="tarjeta-instr" id="tarjeta-obj"><h3>✅ Objetivo</h3><ul id="nivel-obj"></ul></div>
+      <div class="tarjeta-instr paso" id="nivel-paso" hidden></div>
+      <div id="nivel-msg" class="mensaje"></div>
+      <div class="ayuda" id="nivel-ayuda">
+        <b>Cómo se usa</b><br>
+        • Arrastra componentes desde la derecha.<br>
+        • <b>Cable:</b> clic en un pin o agujero y luego clic en otro. Clic en un espacio vacío = hacer un doblez.<br>
+        • <kbd>R</kbd> girar · <kbd>Supr</kbd> eliminar · <kbd>Esc</kbd> cancelar<br>
+        • Rueda del mouse: zoom · arrastrar el fondo: mover la vista.
+      </div>
+    </aside>
+    <div class="area-trabajo">
+      <div class="herramientas">
+        <button id="h-girar" class="solo-circuito" title="Girar (R)">↻</button>
+        <button id="h-borrar" class="solo-circuito" title="Eliminar (Supr)">🗑</button>
+        <button id="h-reiniciar" class="solo-circuito" title="Volver a empezar el nivel">⟲</button>
+        <span class="sep solo-circuito"></span>
+        <span id="h-colores" class="colores solo-circuito" title="Color del cable"></span>
+        <span class="sep solo-circuito"></span>
+        <button id="h-redes" class="solo-circuito" title="Ver a qué pin está conectada cada columna">🌈</button>
+        <button id="h-menos" title="Alejar">−</button>
+        <button id="h-mas" title="Acercar">+</button>
+        <button id="h-ajustar" class="con-texto" title="Centrar la vista en el circuito">🎯 Centrar</button>
+        <span class="sep"></span>
+        <button id="h-sonido" class="solo-circuito" title="Activar o silenciar el sonido">🔊</button>
+        <button id="h-ayuda" class="solo-circuito" title="Cómo se usa">❓</button>
+        <button id="h-estilo" title="Cambiar estilo de la placa (temporal, para comparar)">🎨</button>
+      </div>
+      <svg id="lienzo"></svg>
+      <div class="tooltip" hidden></div>
+      <div class="leyenda" id="leyenda-redes" hidden>
+        <b>Conectado a:</b> <i style="--c:#EF4444"></i>5V <i style="--c:#2563EB"></i>GND <i style="--c:#9333EA"></i>pin digital <i style="--c:#F97316"></i>3.3V
+      </div>
+      <div class="panel-codigo" id="panel-codigo" hidden>
+        <div class="pc-cab">
+          <button class="pc-tab activa" data-tab="bloques">🧩 Bloques</button>
+          <button class="pc-tab" data-tab="texto">⌨️ Texto</button>
+          <span class="pc-esp"></span>
+          <button class="btn-texto" id="pc-cerrar" title="Ocultar el panel">✕</button>
+        </div>
+        <div class="pc-cuerpo">
+          <div id="pc-bloques" class="pc-vista"></div>
+          <textarea id="pc-texto" class="pc-vista" spellcheck="false" hidden placeholder="Escribe o pega aquí tu código de Arduino"></textarea>
+        </div>
+        <div class="pc-monitor"><b>Monitor</b><div id="pc-salida"></div></div>
+      </div>
+    </div>
+    <aside class="panel-der">
+      <h3>Componentes</h3>
+      <div id="paleta" class="paleta"></div>
+    </aside>
+  </div>
+</section>
+
+<div id="modal" class="modal" hidden><div class="modal-caja" id="modal-caja"></div></div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="js/config.js"></script>
+<script src="js/componentes.js"></script>
+<script src="js/pixel.js"></script>
+<script src="js/niveles.js"></script>
+<script src="js/circuito.js"></script>
+<script src="js/programa.js"></script>
+<script src="js/bloques.js"></script>
+<script src="js/progreso.js"></script>
+<script src="js/laboratorio.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
