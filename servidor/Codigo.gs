@@ -11,7 +11,7 @@
  * Menú "RoboMundo" de la hoja: agregar paralelos nuevos y crear el documento con las tarjetas de códigos para imprimir.
  */
 const CURSOS = ['8A', '8B', '8C', '9A', '9B', '9C', '10A', '10B', '10C'];
-const URL_JUEGO = 'https://edumonteskiu-star.github.io/robomundo/'; // dirección del juego publicado (se imprime en las tarjetas)
+const URL_JUEGO = 'https://robotics-lab-ai.github.io/robomundo/'; // dirección del juego publicado (se imprime en las tarjetas)
 const ESTUDIANTES_POR_CURSO = 35; // ~30 por paralelo + 5 de respaldo
 const ENCABEZADOS = ['N° lista', 'Código', 'Nivel actual', 'Niveles completados', 'Estrellas', 'Intentos fallidos', 'Pistas usadas', 'Última conexión', 'Datos (no editar)', 'Ruta guiada'];
 const COL_RUTA = 10;
